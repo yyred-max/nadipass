@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Patient {
+  id             String    @id @default(cuid())
+  phoneHash      String    @unique
+  walletAddress  String?
+  profileHash    String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  contacts       EmergencyContact[]
+  criticalData   CriticalData?
+  breakGlassLogs BreakGlassLog[]
+  qrToken        QRToken?
+
+  @@index([phoneHash])
+}
+
+model EmergencyContact {
+  id             String    @id @default(cuid())
+  patientId      String
+  name           String
+  phoneEncrypted String
+  verifiedAt     DateTime?
+  createdAt      DateTime  @default(now())
+
+  patient        Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId])
+}
+
+model CriticalData {
+  id                   String    @id @default(cuid())
+  patientId            String    @unique
+  allergiesEncrypted   String
+  conditionsEncrypted  String
+  medsEncrypted        String
+  bloodType            String
+  notesEncrypted       String?
+  updatedAt            DateTime  @updatedAt
+
+  patient              Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}
+
+model BreakGlassLog {
+  id                String    @id @default(cuid())
+  patientId         String
+  reason            String
+  sessionTokenHash  String
+  deviceFingerprint String?
+  locationRough     String?
+  notifiedAt        DateTime?
+  notifyStatus      String
+  createdAt         DateTime  @default(now())
+
+  patient           Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId])
+  @@index([createdAt])
+}
+
+model QRToken {
+  id         String    @id @default(cuid())
+  patientId  String    @unique
+  token      String    @unique
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+
+  patient    Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+}
