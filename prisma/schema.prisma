@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider  = env("DATABASE_PROVIDER", "sqlite")
+  url       = env("DATABASE_URL", "sqlite:./dev.db")
+  directUrl = env("DIRECT_URL", env("DATABASE_URL", "sqlite:./dev.db"))
 }
 
 model Patient {
