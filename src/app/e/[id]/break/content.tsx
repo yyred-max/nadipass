@@ -1,20 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { BreakGlassReason } from '@/lib/types';
 
 const REASONS: { value: BreakGlassReason; label: string; desc: string }[] = [
-  { value: 'IGD', label: 'IGD', desc: 'Igd / IGD' },
+  { value: 'IGD', label: 'IGD', desc: 'IGD / IGD' },
   { value: 'AMBULANS', label: 'Ambulans', desc: 'Ambulans' },
-  { value: 'EVENT', label: 'Event', desc: 'Acara / pesta' },
+  { value: 'EVENT', label: 'Acara / Event', desc: 'Acara / pesta' },
   { value: 'LAINNYA', label: 'Lainnya', desc: 'Lainnya' },
 ];
 
 export default function BreakForm() {
   const router = useRouter();
-  const params = useParams();
-  const patientId = params.id as string | undefined;
+  const searchParams = useSearchParams();
+  const patientId = searchParams.get('patientId') || '';
   const [reason, setReason] = useState<BreakGlassReason>('IGD');
   const [confirmed, setConfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -63,7 +63,7 @@ export default function BreakForm() {
             2 tap. Data akan terbuka tanpa akun.
           </p>
 
-          {error && <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
+          {error && <div className="mt-4 rounded-xl border-l-4 border-red-500 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>}
 
           {!confirmed ? (
             <>
@@ -71,7 +71,7 @@ export default function BreakForm() {
                 {REASONS.map((r) => (
                   <label
                     key={r.value}
-                    className={`flex cursor-pointer items-center justify-center gap-3 rounded-xl border p-4 text-center transition ${
+                    className={`flex cursor-pointer items-center justify-center gap-3 rounded-xl border p-4 text-center transition focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 ${
                       reason === r.value
                         ? 'border-teal-500 bg-teal-50'
                         : 'border-zinc-200 bg-zinc-50 hover:bg-zinc-100'
@@ -115,7 +115,7 @@ export default function BreakForm() {
             </>
           ) : (
             <div className="mt-6 text-center">
-              <p className="text-sm text-zinc-500">Siap membuka...</p>
+              <p className="text-sm text-zinc-500">Klik tombol <b>Buka Sekarang</b> untuk membuka data.</p>
             </div>
           )}
         </div>

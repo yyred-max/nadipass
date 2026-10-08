@@ -4,11 +4,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { generateQRToken, hashPhone } from '@/lib/patient';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const PHONE_REGEX = /^08\d{8,14}$/;
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: fingerprint = first IP or fallback UA
+    const fingerprint =
+      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+      req.headers.get('user-agent') ??
+      'unknown';
+    const rate = checkRateLimit('register:' + fingerprint);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        { error: 'Terlalu banyak percobaan. Tunggu 5 menit.' },
+        { status: 429 },
+      );
+    }
+
     const body = await req.json().catch(() => ({} as { phone?: string; consent?: boolean }));
     const phone = typeof body.phone === 'string' ? body.phone.trim() : '';
     const consent = body.consent === true;
@@ -43,12 +57,11 @@ export async function POST(req: NextRequest) {
     }
 
     const patient = await prisma.patient.create({
-      data: {
-        phoneHash,
-        profileHash: 'pending',
-      },
-      select: { id: true },
-    });
+          data: {
+            phoneHash,
+          },
+          select: { id: true },
+        });
 
     const qrToken = await prisma.qRToken.create({
       data: {

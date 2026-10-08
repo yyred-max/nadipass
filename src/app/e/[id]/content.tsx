@@ -6,7 +6,7 @@ import { LockClosedIcon } from '@heroicons/react/24/outline';
 type Patient = {
   id: string;
   phoneHash: string;
-  profileHash: string;
+  fullName: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -57,13 +57,13 @@ export default function LockedCardContent({ patient, criticalData }: Props) {
       <div className="mx-auto max-w-lg text-center">
         <div className="mb-6 flex justify-center">
           <div className="h-24 w-24 rounded-full bg-zinc-200 flex items-center justify-center text-3xl font-bold text-zinc-500">
-            {patient.profileHash?.slice(0, 2) || 'PN'}
+            {patient.fullName?.slice(0, 2).toUpperCase() || 'PN'}
           </div>
         </div>
 
         <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
-          {patient.phoneHash?.slice(0, 4) || 'Pasien NadiPass'}
-        </h1>
+                  {patient.fullName?.slice(0, 2).toUpperCase() || 'PN'}
+                </h1>
         <p className="mt-1 text-sm text-zinc-500">
           {criticalData?.bloodType ? `Gol. Darah: ${criticalData.bloodType}` : 'Golongan darah belum diisi'}
         </p>

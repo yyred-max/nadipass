@@ -90,12 +90,12 @@ async function createFixture() {
     throw new Error('Failed to fetch QR token via API');
   }
 
-  // 3. Create critical data via the dev server (POST to a protected endpoint)
-  //    The server's /api/patient/[id] route accepts a body that includes
-  //    encrypted fields; we send them in the canonical JSON format.
-  const cd = await apiFetch(`/api/patient/${patientId}`, {
+  // 3. Create critical data via the dev server (POST to /api/patient/critical-data)
+  //    The server's critical-data route encrypts and upserts the payloads.
+  const cd = await apiFetch(`/api/patient/critical-data`, {
     method: 'POST',
     body: JSON.stringify({
+      patientId,
       allergies: ['Penisilin', 'Seafood'],
       chronicConditions: ['Diabetes'],
       routineMeds: ['Metformin'],
@@ -104,6 +104,7 @@ async function createFixture() {
       emergencyContacts: [{ name: TEST_CONTACT_NAME, phone: TEST_CONTACT_PHONE }],
     }),
   });
+  console.log('[debug] critical-data status =', cd.status, 'body =', JSON.stringify(cd.body));
   assert(cd.status === 200, 'patient critical-data returns 200');
 
   return patientId;

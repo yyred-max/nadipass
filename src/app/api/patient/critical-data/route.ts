@@ -16,6 +16,8 @@ export async function POST(req: NextRequest) {
       bloodType,
       emergencyContacts,
       notes,
+      fullName,
+      birthYear,
     } = body;
 
     if (!patientId) {
@@ -27,6 +29,16 @@ export async function POST(req: NextRequest) {
     });
     if (!patient) {
       return NextResponse.json({ error: 'Patient tidak ditemukan.' }, { status: 404 });
+    }
+
+    if (fullName || birthYear) {
+      await prisma.patient.update({
+        where: { id: patientId },
+        data: {
+          fullName: fullName || patient.fullName,
+          birthYear: birthYear ? parseInt(birthYear, 10) : patient.birthYear,
+        },
+      });
     }
 
     // 1. Encrypt & upsert CriticalData

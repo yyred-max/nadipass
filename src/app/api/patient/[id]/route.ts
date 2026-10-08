@@ -15,15 +15,16 @@ export async function GET(
     }
 
     const patient = await prisma.patient.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        phoneHash: true,
-        profileHash: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+          where: { id },
+          select: {
+            id: true,
+            phoneHash: true,
+            fullName: true,
+            birthYear: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        });
 
     if (!patient) {
       return NextResponse.json({ error: 'Patient tidak ditemukan.' }, { status: 404 });

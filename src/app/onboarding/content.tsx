@@ -92,9 +92,15 @@ export default function OnboardingContent() {
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Simpan gagal');
-      sessionStorage.setItem(`nadipass_onboarding_${patientId}`, JSON.stringify(payload));
-      setSaved(true);
+      if (res.ok) {
+            sessionStorage.setItem(`nadipass_onboarding_${patientId}`, JSON.stringify(payload));
+            setSaved(true);
+            setTimeout(() => {
+              window.location.href = `/dashboard?patientId=${patientId}`;
+            }, 1500);
+            return;
+          }
+          throw new Error(data.error || 'Simpan gagal');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Simpan gagal');
     } finally {
@@ -289,21 +295,23 @@ export default function OnboardingContent() {
                   {contacts.map((c, i) => (
                     <div key={i} className="flex gap-2">
                       <input
-                        value={c.name}
-                        onChange={(e) =>
-                          setContacts((prev) => prev.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))
-                        }
-                        placeholder={`Nama ${i === 0 ? '(wajib)' : '(opsional)'}`}
-                        className="min-w-[140px] flex-1 rounded-xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
-                        maxLength={60}
-                      />
-                      <input
-                        value={c.phone}
-                        onChange={(e) =>
-                          setContacts((prev) => prev.map((x, j) => (j === i ? { ...x, phone: e.target.value } : x)))
-                        }
-                        placeholder="No. HP"
-                        className="min-w-[120px] flex-1 rounded-xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                                              value={c.name}
+                                              onChange={(e) =>
+                                                setContacts((prev) => prev.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))
+                                              }
+                                              placeholder={`Nama ${i === 0 ? '(wajib)' : '(opsional)'}`}
+                                              aria-label="Nama kontak darurat"
+                                              className="min-w-[140px] flex-1 rounded-xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                                              maxLength={60}
+                                            />
+                                            <input
+                                              value={c.phone}
+                                              onChange={(e) =>
+                                                setContacts((prev) => prev.map((x, j) => (j === i ? { ...x, phone: e.target.value } : x)))
+                                              }
+                                              placeholder="No. HP"
+                                              aria-label="Nomor HP kontak darurat"
+                                              className="min-w-[120px] flex-1 rounded-xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
                         maxLength={14}
                       />
                       {contacts.length > 1 && (

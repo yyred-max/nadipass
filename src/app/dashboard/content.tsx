@@ -73,7 +73,7 @@ export default function DashboardContent() {
           <h1 className="text-xl font-bold tracking-tight text-zinc-900">Dashboard</h1>
           <p className="mt-1 text-xs text-zinc-500">Data daruratan, siap dibuka petugas.</p>
 
-          {error && <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
+          {error && <div className="mt-4 rounded-xl border-l-4 border-red-500 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>}
 
           {loading ? (
             <div className="mt-6 flex items-center justify-center gap-3 text-sm text-zinc-500">
@@ -104,7 +104,7 @@ export default function DashboardContent() {
                   className="flex h-[56px] items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:bg-zinc-100"
                 >
                   <PowerIcon className={`h-5 w-5 ${qr.isActive ? 'text-zinc-400' : 'text-red-500'}`} />
-                  {qr.isActive ? 'Matikan QR' : 'Aktifkan QR'}
+                  {qr.isActive ? 'Matikan QR' : 'QR sudah dimatikan. Hubungi petugas atau keluarga untuk mengaktifkan kembali.'}
                 </button>
                 <a
                   href={`/onboarding?patientId=${patientId}`}

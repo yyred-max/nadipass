@@ -15,7 +15,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     select: {
       id: true,
       phoneHash: true,
-      profileHash: true,
       createdAt: true,
       updatedAt: true,
     },

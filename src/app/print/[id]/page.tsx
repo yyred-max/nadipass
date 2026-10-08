@@ -1,20 +1,8 @@
-import { cookies, headers } from 'next/headers';
-import { prisma } from '@/lib/prisma';
-import { notFound } from 'next/navigation';
-import { QRCodeSVG } from 'qrcode.react';
-
-// Small client component for the print button
-function PrintButton({ className = '' }: { className?: string }) {
-  return (
-    <button
-      type="button"
-      onClick={() => window.print()}
-      className={`inline-flex h-[56px] items-center justify-center gap-2 rounded-xl bg-teal-600 px-4 text-sm font-semibold text-white transition hover:bg-teal-500 ${className}`}
-    >
-      Print / Cetak
-    </button>
-  );
-}
+import { cookies, headers } from "next/headers";
+import { prisma } from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import { QRCodeSVG } from "qrcode.react";
+import PrintButton from "./components/PrintButton";
 
 export default async function PrintPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

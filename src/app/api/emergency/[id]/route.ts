@@ -17,10 +17,6 @@ function decryptStored(stored: string): string {
   return decryptField(parsed.ciphertext, parsed.iv, parsed.tag);
 }
 
-function hashToken(token: string): string {
-  return crypto.createHash('sha256').update(token, 'utf8').digest('hex');
-}
-
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -41,6 +37,11 @@ export async function GET(
     const verified = await verifySession(token);
     if (!verified) {
       return NextResponse.json({ error: 'Sesi tidak valid.' }, { status: 401 });
+    }
+
+    // Ownership check
+    if (verified.patientId !== id) {
+      return NextResponse.json({ error: 'Sesi tidak cocok dengan pasien.' }, { status: 403 });
     }
 
     // 2. Verify the token belongs to this patient
@@ -69,10 +70,12 @@ export async function GET(
       ? decryptStored(criticalData.notesEncrypted)
       : undefined;
 
-    const emergencyContacts = patient.contacts.map((c) => ({
-      name: c.name || '',
-      phone: c.phoneEncrypted ? decryptStored(c.phoneEncrypted) : '',
-    }));
+    const emergencyContacts = patient.contacts.map(
+      (c: { id: string; name: string; phoneEncrypted: string | null }) => ({
+        name: c.name || '',
+        phone: c.phoneEncrypted ? decryptStored(c.phoneEncrypted) : '',
+      }),
+    );
 
     return NextResponse.json({
       payload: {

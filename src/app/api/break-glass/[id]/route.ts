@@ -19,7 +19,6 @@ import { BreakGlassReason } from '@/lib/types';
 function getDeviceFingerprint(req: NextRequest): string {
   const header = req.headers.get('x-device-fingerprint');
   if (header) return header;
-  // Fallback: hash of IP + UA
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
   const ua = req.headers.get('user-agent') ?? 'unknown';
   return `${ip}|${ua}`;
@@ -113,7 +112,8 @@ export async function POST(
         : undefined;
 
     // Decrypt emergency contact phones (only phone field)
-    const emergencyContacts = patient.contacts.map((c) => {
+    const emergencyContacts = patient.contacts.map(
+      (c: { id: string; name: string; phoneEncrypted: string | null }) => {
       console.log('[break-glass]   contact:', c.id, 'phoneEncrypted:', c.phoneEncrypted ? 'present (JSON string)' : 'null');
       const phoneEncrypted = c.phoneEncrypted ? JSON.parse(c.phoneEncrypted as string) : null;
       return {
