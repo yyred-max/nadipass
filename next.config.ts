@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  /* config options here */
   // cacheComponents and partialPrefetching are disabled to allow dynamic routes
   // that access the database (e.g., /e/[id], /print/[id]) during prerendering.
   turbopack: {

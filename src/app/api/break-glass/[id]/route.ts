@@ -13,6 +13,7 @@ import { verifySession, signSession } from '@/lib/session';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { notifyEmergencyOpen } from '@/lib/notify';
 import { BreakGlassReason } from '@/lib/types';
+import { logBreakGlassOnChain } from '@/lib/monad';
 
 // ---- Helpers ----
 
@@ -150,6 +151,11 @@ export async function POST(
     if (!log) {
       return NextResponse.json({ error: 'Gagal mencatat sesi.' }, { status: 500 });
     }
+
+    // Fire-and-forget: log break-glass on Monad. Never blocking the session.
+    logBreakGlassOnChain(id, log.id, reason).catch((err) => {
+      console.error('[break-glass] on-chain break-glass log failed:', err);
+    });
 
     // 6. Sign JWT session (2 hours) with the real log ID
     const sessionToken = await signSession(id, log.id);

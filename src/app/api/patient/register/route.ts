@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { generateQRToken, hashPhone } from '@/lib/patient';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { logIdentityOnChain } from '@/lib/monad';
 
 const PHONE_REGEX = /^08\d{8,14}$/;
 
@@ -69,6 +70,11 @@ export async function POST(req: NextRequest) {
         token: generateQRToken(),
       },
       select: { token: true },
+    });
+
+    // Fire-and-forget: log identity on Monad. Never blocking registration.
+    logIdentityOnChain(patient.id, phoneHash).catch((err) => {
+      console.error('[patient/register] on-chain identity log failed:', err);
     });
 
     return NextResponse.json({
