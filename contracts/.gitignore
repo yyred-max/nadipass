@@ -1,0 +1,30 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# hardhat output
+/cache
+/artifacts
+/types
+/dist
+
+# generated files
+coverage
+
+# environment
+.env
+.env.local
+.env.*.local
+
+# OS / editors
+.DS_Store
+*.log
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

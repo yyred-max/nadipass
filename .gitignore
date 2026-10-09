@@ -52,3 +52,11 @@ analyze-env.js
 .agents/
 .claude/
 skills-lock.json
+
+# Remotion video project (separate, not part of Next.js app)
+src/index.ts
+src/constants.ts
+src/RootComposition.tsx
+src/components/
+tsconfig.step1.json
+ws/

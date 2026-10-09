@@ -8,7 +8,11 @@ export default function Home() {
     <div className="min-h-screen bg-zinc-50 font-sans">
       <section className="bg-white px-6 pt-16 pb-20 text-center sm:pt-24 sm:pb-28">
         <div className="mx-auto max-w-2xl">
-          <p className="text-xs font-semibold tracking-widest text-teal-600 uppercase">NadiPass</p>
+          <img
+            src="/logoNadipass.png"
+            alt="NadiPass"
+            className="mx-auto mb-10 h-14 w-auto sm:h-16 md:h-20"
+          />
           <h1 className="mt-3 text-4xl font-bold leading-tight tracking-tight text-zinc-900 sm:text-5xl">
             Petugas bisa buka data darurat{' '}
             <span className="text-red-500">meski pasien pingsan.</span>
@@ -28,6 +32,15 @@ export default function Home() {
               className="flex h-[56px] items-center justify-center rounded-xl border border-zinc-200 bg-white px-6 text-base font-semibold text-zinc-700 transition hover:bg-zinc-50"
             >
               Coba Onboarding
+            </a>
+            <a
+              href="/scan"
+              className="flex h-[56px] items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-6 text-base font-semibold text-zinc-700 transition hover:bg-zinc-50"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+              Scan QR (Petugas)
             </a>
           </div>
         </div>

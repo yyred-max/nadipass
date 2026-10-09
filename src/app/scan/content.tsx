@@ -19,6 +19,32 @@ export default function ScanContent() {
     }
   };
 
+  const stopCamera = async () => {
+    const scanner = html5QrCodeRef.current;
+    if (!scanner) {
+      setScanning(false);
+      return;
+    }
+    try {
+      // Cek dulu apakah scanner benar-benar running
+      if (scanner.isScanning) {
+        await scanner.stop();
+      }
+    } catch (err: any) {
+      // Ignore "Cannot stop" error (scanner sudah stop / belum start)
+      const msg = String(err?.message || '');
+      if (!msg.includes('Cannot stop') && !msg.includes('not running')) {
+        console.warn('[scan] stop error:', err);
+      }
+    } finally {
+      try {
+        scanner.clear();
+      } catch {}
+      html5QrCodeRef.current = null;
+      setScanning(false);
+    }
+  };
+
   const startCamera = async () => {
     setError(null);
     try {
@@ -40,15 +66,6 @@ export default function ScanContent() {
     }
   };
 
-  const stopCamera = async () => {
-    if (html5QrCodeRef.current) {
-      await html5QrCodeRef.current.stop();
-      html5QrCodeRef.current.clear();
-      html5QrCodeRef.current = null;
-    }
-    setScanning(false);
-  };
-
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -65,9 +82,7 @@ export default function ScanContent() {
 
   useEffect(() => {
     return () => {
-      if (html5QrCodeRef.current) {
-        html5QrCodeRef.current.stop().catch(() => {});
-      }
+      stopCamera();
     };
   }, []);
 
